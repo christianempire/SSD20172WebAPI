@@ -37,8 +37,9 @@ namespace SSD20172WebAPI
 
             app.UseCors(builder =>
             {
-                builder.WithOrigins("http://localhost:52089/", "http://ssd20172webapp.azurewebsites.net/");
+                builder.WithOrigins("http://localhost:52089/", "http://ssd20172webapp.azurewebsites.net/").AllowAnyHeader();
             });
+
 
             app.UseMvc();
         }
