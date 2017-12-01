@@ -24,6 +24,7 @@ namespace SSD20172WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,6 +34,11 @@ namespace SSD20172WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(builder =>
+            {
+                builder.WithOrigins("http://localhost:52089/", "http://ssd20172webapp.azurewebsites.net/");
+            });
 
             app.UseMvc();
         }
