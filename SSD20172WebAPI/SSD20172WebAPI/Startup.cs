@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using SSD20172WebAPI.Models;
 
 namespace SSD20172WebAPI
 {
@@ -26,7 +27,7 @@ namespace SSD20172WebAPI
         {
             services.AddMvc();
 
-            //services.AddDbContext<SimulationDb>(options => options.UseSqlServer(Configuration.GetConnectionString("SimulationDb")));
+            services.AddDbContext<SimulationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SimulationDb")));
 
             services.AddCors();
         }

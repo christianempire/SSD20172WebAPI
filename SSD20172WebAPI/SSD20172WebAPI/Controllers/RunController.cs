@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SSD20172WebAPI.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace SSD20172WebAPI.Controllers
@@ -7,6 +8,13 @@ namespace SSD20172WebAPI.Controllers
     [Route("[controller]/[action]")]
     public class RunController : Controller
     {
+        private readonly SimulationDbContext _simulationDbContext;
+
+        public RunController(SimulationDbContext simulationDbContext)
+        {
+            _simulationDbContext = simulationDbContext;
+        }
+
         [HttpGet]
         public async Task<IActionResult> Simple([FromQuery]int numExpertAgents, [FromQuery]int numNewAgents)
         {
@@ -44,7 +52,20 @@ namespace SSD20172WebAPI.Controllers
 
                     if (MiddlewareController.CurrentRequest.Status == "Finished")
                     {
-                        return Ok(MiddlewareController.CurrentRequest);
+                        //Simulation simulation = MiddlewareController.CurrentRequest.Simulation;
+
+                        //foreach (Agent agent in simulation.Agent)
+                        //{
+                        //    _simulationDbContext.Agent.Add(agent);
+                        //}
+
+                        //simulation.CreatedOn = DateTime.UtcNow;
+                        //simulation.Description = "Sample Text";
+
+                        //_simulationDbContext.Simulation.Add(simulation);
+                        //_simulationDbContext.SaveChanges();
+
+                        return Ok(MiddlewareController.CurrentRequest.Simulation);
                     }
                     else
                     {
@@ -138,7 +159,20 @@ namespace SSD20172WebAPI.Controllers
 
                     if (MiddlewareController.CurrentRequest.Status == "Finished")
                     {
-                        return Ok(MiddlewareController.CurrentRequest);
+                        simulation = MiddlewareController.CurrentRequest.Simulation;
+
+                        foreach (Agent agent in simulation.Agent)
+                        {
+                            _simulationDbContext.Agent.Add(agent);
+                        }
+
+                        simulation.CreatedOn = DateTime.UtcNow;
+                        simulation.Description = "Sample Text";
+
+                        _simulationDbContext.Simulation.Add(simulation);
+                        _simulationDbContext.SaveChanges();
+
+                        return Ok();
                     }
                     else
                     {
