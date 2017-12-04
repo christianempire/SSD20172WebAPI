@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 
 namespace SSD20172WebAPI
 {
@@ -24,6 +25,9 @@ namespace SSD20172WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            //services.AddDbContext<SimulationDb>(options => options.UseSqlServer(Configuration.GetConnectionString("SimulationDb")));
+
             services.AddCors();
         }
 
@@ -39,7 +43,6 @@ namespace SSD20172WebAPI
             {
                 builder.WithOrigins("http://localhost:52089", "http://ssd20172webapp.azurewebsites.net").AllowAnyHeader();
             });
-
 
             app.UseMvc();
         }

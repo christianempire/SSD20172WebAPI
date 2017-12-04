@@ -1,77 +1,162 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SSD20172WebAPI.Models;
+using System.Threading.Tasks;
 
 namespace SSD20172WebAPI.Controllers
 {
+    [Route("[controller]/[action]")]
     public class RunController : Controller
     {
-        [Route("[controller]")]
         [HttpGet]
-        public IActionResult Index([FromQuery]int numNewAgents, [FromQuery]int numExpertAgents)
+        public async Task<IActionResult> Simple([FromQuery]int numExpertAgents, [FromQuery]int numNewAgents)
         {
-            //string response = "";
-
-            //try
-            //{
-            //    // Run the model executor
-            //    System.Diagnostics.Process process = new System.Diagnostics.Process();
-            //    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-            //    startInfo.FileName = @"C:\ModelExecutor\SSD20172ConsoleApp.exe";
-            //    startInfo.Arguments = "";
-            //    process.StartInfo = startInfo;
-            //    process.EnableRaisingEvents = true;
-            //    process.Start();
-            //    process.WaitForExit();
-
-            //    // Read the output file
-            //    //response = System.IO.File.ReadAllText(@"C:\Simulation\AirportServiceModel.out");
-            //}
-            //catch (Exception e)
-            //{
-            //    response = e.ToString();
-            //}
-
-            if (numNewAgents > 0 && numExpertAgents > 0)
+            if (MiddlewareController.CurrentRequest.Status == "Finished")
             {
-                var agents = new List<SimpleSimulationAgent>();
-
-                for (int i = 0; i < numNewAgents; i++)
+                if ((numExpertAgents > 0 || numNewAgents > 0) && (numExpertAgents + numNewAgents > 4))
                 {
-                    agents.Add(new SimpleSimulationAgent {
-                        IsExpert = false,
-                        Utilization = 1.999M
-                    });
-                }
-
-                for (int i = 0; i < numExpertAgents; i++)
-                {
-                    agents.Add(new SimpleSimulationAgent
+                    MiddlewareController.CurrentRequest = new MiddlewareRequest
                     {
-                        IsExpert = true,
-                        Utilization = 1.999M
-                    });
+                        Status = "Submitted",
+                        IsAdvanced = false,
+                        NumExpertAgents = numExpertAgents,
+                        NumNewAgents = numNewAgents
+                    };
+
+                    int tickDuration = 1000;
+                    int maxAwaitingTicks = 15;
+                    int ticks = 0;
+
+                    while (MiddlewareController.CurrentRequest.Status == "Submitted" && ticks < maxAwaitingTicks)
+                    {
+                        await Task.Delay(tickDuration);
+                        ticks++;
+                    }
+
+                    if (MiddlewareController.CurrentRequest.Status == "InProgress")
+                    {
+                        ticks = 0;
+                        while (MiddlewareController.CurrentRequest.Status == "InProgress" && ticks < maxAwaitingTicks)
+                        {
+                            await Task.Delay(tickDuration);
+                            ticks++;
+                        }
+                    }
+
+                    if (MiddlewareController.CurrentRequest.Status == "Finished")
+                    {
+                        return Ok(MiddlewareController.CurrentRequest);
+                    }
+                    else
+                    {
+                        MiddlewareController.CurrentRequest = new MiddlewareRequest
+                        {
+                            Status = "Finished"
+                        };
+                        return Accepted();
+                    }
                 }
-
-                var simpleSimulation = new SimpleSimulation
+                else
                 {
-                    NumNewAgents = numNewAgents,
-                    NumExpertAgents = numExpertAgents,
-                    AvgTimeInSystem = 1.9999M,
-                    AvgWaitingTime = 1.999M,
-                    Agents = agents,
-                    AvgNumberInQueue = 1.999M,
-                    MaxNumberInQueue = 1.999M
-                };
-
-                return Ok(simpleSimulation);
+                    return BadRequest();
+                }
             }
             else
             {
-                return BadRequest();
+                return Accepted();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Advanced(
+            [FromQuery]int numNewAgents, 
+            [FromQuery]int numExpertAgents,
+            [FromQuery]decimal totalServiceDuration,
+            [FromQuery]decimal agentLunchDuration,
+            [FromQuery]int minAgentsDuringLunch,
+            [FromQuery]decimal meanArrivalTime,
+            [FromQuery]decimal lowerTransferTime,
+            [FromQuery]decimal upperTransferTime,
+            [FromQuery]decimal expertAgentMeanServiceDuration,
+            [FromQuery]decimal newAgentMeanServiceDuration)
+        {
+            if (MiddlewareController.CurrentRequest.Status == "Finished")
+            {
+                bool validation1 = (numExpertAgents > 0 || numNewAgents > 0) 
+                    && totalServiceDuration > 0 
+                    && agentLunchDuration > 0 
+                    && minAgentsDuringLunch > 0
+                    && meanArrivalTime > 0
+                    && lowerTransferTime > 0
+                    && upperTransferTime > 0
+                    && expertAgentMeanServiceDuration > 0
+                    && newAgentMeanServiceDuration > 0;
+                bool validation2 = numExpertAgents + numNewAgents > minAgentsDuringLunch;
+                bool validation3 = upperTransferTime > lowerTransferTime;
+
+                if (validation1 && validation2 & validation3)
+                {
+                    Simulation simulation = new Simulation
+                    {
+                        TotalServiceDuration = totalServiceDuration,
+                        AgentLunchDuration = agentLunchDuration,
+                        MinAgentsDuringLunch = minAgentsDuringLunch,
+                        MeanArrivalTime = meanArrivalTime,
+                        LowerTransferTime = lowerTransferTime,
+                        UpperTransferTime = upperTransferTime,
+                        ExpertAgentMeanServiceDuration = expertAgentMeanServiceDuration,
+                        NewAgentMeanServiceDuration = newAgentMeanServiceDuration
+                    };
+
+                    MiddlewareController.CurrentRequest = new MiddlewareRequest
+                    {
+                        Status = "Submitted",
+                        IsAdvanced = true,
+                        NumExpertAgents = numExpertAgents,
+                        NumNewAgents = numNewAgents,
+                        Simulation = simulation
+                    };
+
+                    int tickDuration = 1000;
+                    int maxAwaitingTicks = 15;
+                    int ticks = 0;
+
+                    while (MiddlewareController.CurrentRequest.Status == "Submitted" && ticks < maxAwaitingTicks)
+                    {
+                        await Task.Delay(tickDuration);
+                        ticks++;
+                    }
+
+                    if (MiddlewareController.CurrentRequest.Status == "InProgress")
+                    {
+                        ticks = 0;
+                        while (MiddlewareController.CurrentRequest.Status == "InProgress" && ticks < maxAwaitingTicks)
+                        {
+                            await Task.Delay(tickDuration);
+                            ticks++;
+                        }
+                    }
+
+                    if (MiddlewareController.CurrentRequest.Status == "Finished")
+                    {
+                        return Ok(MiddlewareController.CurrentRequest);
+                    }
+                    else
+                    {
+                        MiddlewareController.CurrentRequest = new MiddlewareRequest
+                        {
+                            Status = "Finished"
+                        };
+                        return Accepted();
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return Accepted();
             }
         }
     }
