@@ -172,7 +172,7 @@ namespace SSD20172WebAPI.Controllers
                         //_simulationDbContext.Simulation.Add(simulation);
                         //_simulationDbContext.SaveChanges();
 
-                        return Ok();
+                        return Ok(MiddlewareController.CurrentRequest.Simulation);
                     }
                     else
                     {
