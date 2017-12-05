@@ -159,18 +159,18 @@ namespace SSD20172WebAPI.Controllers
 
                     if (MiddlewareController.CurrentRequest.Status == "Finished")
                     {
-                        simulation = MiddlewareController.CurrentRequest.Simulation;
+                        //simulation = MiddlewareController.CurrentRequest.Simulation;
 
-                        foreach (Agent agent in simulation.Agent)
-                        {
-                            _simulationDbContext.Agent.Add(agent);
-                        }
+                        //foreach (Agent agent in simulation.Agent)
+                        //{
+                        //    _simulationDbContext.Agent.Add(agent);
+                        //}
 
-                        simulation.CreatedOn = DateTime.UtcNow;
-                        simulation.Description = "Sample Text";
+                        //simulation.CreatedOn = DateTime.UtcNow;
+                        //simulation.Description = "Sample Text";
 
-                        _simulationDbContext.Simulation.Add(simulation);
-                        _simulationDbContext.SaveChanges();
+                        //_simulationDbContext.Simulation.Add(simulation);
+                        //_simulationDbContext.SaveChanges();
 
                         return Ok();
                     }
