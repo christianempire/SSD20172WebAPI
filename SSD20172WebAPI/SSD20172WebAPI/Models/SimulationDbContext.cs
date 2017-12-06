@@ -17,7 +17,7 @@ namespace SSD20172WebAPI.Models
         {
             modelBuilder.Entity<Agent>(entity =>
             {
-                entity.Property(e => e.Utilization).HasColumnType("decimal(6, 5)");
+                entity.Property(e => e.Utilization).HasColumnType("decimal(10, 5)");
 
                 entity.HasOne(d => d.Simulation)
                     .WithMany(p => p.Agent)
@@ -27,13 +27,13 @@ namespace SSD20172WebAPI.Models
 
             modelBuilder.Entity<Simulation>(entity =>
             {
-                entity.Property(e => e.AgentLunchDuration).HasColumnType("decimal(6, 5)");
+                entity.Property(e => e.AgentLunchDuration).HasColumnType("decimal(10, 5)");
 
-                entity.Property(e => e.AvgNumberInQueue).HasColumnType("decimal(6, 5)");
+                entity.Property(e => e.AvgNumberInQueue).HasColumnType("decimal(10, 5)");
 
-                entity.Property(e => e.AvgTimeInSystem).HasColumnType("decimal(6, 5)");
+                entity.Property(e => e.AvgTimeInSystem).HasColumnType("decimal(10, 5)");
 
-                entity.Property(e => e.AvgWaitingTime).HasColumnType("decimal(6, 5)");
+                entity.Property(e => e.AvgWaitingTime).HasColumnType("decimal(10, 5)");
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
@@ -41,19 +41,19 @@ namespace SSD20172WebAPI.Models
                     .IsRequired()
                     .HasMaxLength(250);
 
-                entity.Property(e => e.ExpertAgentMeanServiceDuration).HasColumnType("decimal(6, 5)");
+                entity.Property(e => e.ExpertAgentMeanServiceDuration).HasColumnType("decimal(10, 5)");
 
-                entity.Property(e => e.LowerTransferTime).HasColumnType("decimal(6, 5)");
+                entity.Property(e => e.LowerTransferTime).HasColumnType("decimal(10, 5)");
 
-                entity.Property(e => e.MaxNumberInQueue).HasColumnType("decimal(6, 5)");
+                entity.Property(e => e.MaxNumberInQueue).HasColumnType("decimal(10, 5)");
 
-                entity.Property(e => e.MeanArrivalTime).HasColumnType("decimal(6, 5)");
+                entity.Property(e => e.MeanArrivalTime).HasColumnType("decimal(10, 5)");
 
-                entity.Property(e => e.NewAgentMeanServiceDuration).HasColumnType("decimal(6, 5)");
+                entity.Property(e => e.NewAgentMeanServiceDuration).HasColumnType("decimal(10, 5)");
 
-                entity.Property(e => e.TotalServiceDuration).HasColumnType("decimal(6, 5)");
+                entity.Property(e => e.TotalServiceDuration).HasColumnType("decimal(10, 5)");
 
-                entity.Property(e => e.UpperTransferTime).HasColumnType("decimal(6, 5)");
+                entity.Property(e => e.UpperTransferTime).HasColumnType("decimal(10, 5)");
             });
         }
     }

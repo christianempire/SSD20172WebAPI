@@ -24,6 +24,7 @@ namespace SSD20172WebAPI.Controllers
             if (ModelState.IsValid)
             {
                 CurrentRequest = request;
+
                 return Ok(CurrentRequest);
             }
             else

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using SSD20172WebAPI.Models;
+using Newtonsoft.Json;
 
 namespace SSD20172WebAPI
 {
@@ -26,9 +27,7 @@ namespace SSD20172WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-
             services.AddDbContext<SimulationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SimulationDb")));
-
             services.AddCors();
         }
 
@@ -42,7 +41,7 @@ namespace SSD20172WebAPI
 
             app.UseCors(builder =>
             {
-                builder.WithOrigins("http://localhost:52089", "http://ssd20172webapp.azurewebsites.net").AllowAnyHeader();
+                builder.WithOrigins("http://localhost:52089", "http://ssd20172webapp.azurewebsites.net").AllowAnyHeader().AllowAnyMethod();
             });
 
             app.UseMvc();

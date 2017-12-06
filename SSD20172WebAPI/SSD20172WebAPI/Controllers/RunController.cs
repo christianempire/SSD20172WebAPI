@@ -52,19 +52,6 @@ namespace SSD20172WebAPI.Controllers
 
                     if (MiddlewareController.CurrentRequest.Status == "Finished")
                     {
-                        //Simulation simulation = MiddlewareController.CurrentRequest.Simulation;
-
-                        //foreach (Agent agent in simulation.Agent)
-                        //{
-                        //    _simulationDbContext.Agent.Add(agent);
-                        //}
-
-                        //simulation.CreatedOn = DateTime.UtcNow;
-                        //simulation.Description = "Sample Text";
-
-                        //_simulationDbContext.Simulation.Add(simulation);
-                        //_simulationDbContext.SaveChanges();
-
                         return Ok(MiddlewareController.CurrentRequest.Simulation);
                     }
                     else
@@ -159,19 +146,6 @@ namespace SSD20172WebAPI.Controllers
 
                     if (MiddlewareController.CurrentRequest.Status == "Finished")
                     {
-                        //simulation = MiddlewareController.CurrentRequest.Simulation;
-
-                        //foreach (Agent agent in simulation.Agent)
-                        //{
-                        //    _simulationDbContext.Agent.Add(agent);
-                        //}
-
-                        //simulation.CreatedOn = DateTime.UtcNow;
-                        //simulation.Description = "Sample Text";
-
-                        //_simulationDbContext.Simulation.Add(simulation);
-                        //_simulationDbContext.SaveChanges();
-
                         return Ok(MiddlewareController.CurrentRequest.Simulation);
                     }
                     else
