@@ -77,6 +77,11 @@ namespace SSD20172WebAPI.Controllers
                     _simulationDbContext.Simulation.Add(simulation);
                     _simulationDbContext.SaveChanges();
 
+                    foreach (var agent in simulation.Agent)
+                    {
+                        agent.Simulation = null;
+                    }
+
                     return Ok(simulation);
                 }
                 else
